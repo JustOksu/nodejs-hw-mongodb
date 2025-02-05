@@ -1,8 +1,9 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const contactsRoutes = require('./routes/contactsRoutes');
 require('dotenv').config();
 
-const setupServer = () => {
+function setupServer() {
   const app = express();
   const PORT = process.env.PORT || 3000;
 
@@ -12,6 +13,6 @@ const setupServer = () => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
-};
+}
 
 module.exports = setupServer;
