@@ -1,29 +1,24 @@
+const fs = require('fs').promises;
 const mongoose = require('mongoose');
 const Contact = require('../models/contacts');
-const initMongoConnection = require('../db/initMongoConnection');
-
-const contacts = [
-  {
-    name: 'Yulia Shevchenko',
-    phoneNumber: '+380000000001',
-    email: 'oleh@example.com',
-    isFavourite: false,
-    contactType: 'personal',
-  },
-  {
-    name: 'Dmytro Boyko',
-    phoneNumber: '+380000000002',
-    isFavourite: false,
-    contactType: 'personal',
-  },
-];
+const initMongoConnection = require('./initMongoConnection');
 
 const seedContacts = async () => {
-  await initMongoConnection();
-  await Contact.deleteMany();
-  await Contact.insertMany(contacts);
-  console.log('Contacts successfully imported!');
-  process.exit();
+  try {
+    await initMongoConnection();
+
+    const contactsData = await fs.readFile('./src/contacts.json', 'utf-8');
+    const contacts = JSON.parse(contactsData);
+
+    await Contact.deleteMany();
+    await Contact.insertMany(contacts);
+
+    console.log('Contacts successfully imported!');
+    process.exit();
+  } catch (error) {
+    console.error('Error seeding contacts:', error);
+    process.exit(1);
+  }
 };
 
 seedContacts();
